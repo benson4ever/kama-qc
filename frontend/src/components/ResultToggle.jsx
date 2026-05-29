@@ -7,7 +7,7 @@ export default function ResultToggle({ value, onChange, options }) {
         const cls = on ? (o.color === 'green' ? 'on-green' : o.color === 'red' ? 'on-red' : 'on-blue') : '';
         return (
           <button type="button" key={o.value} className={cls} onClick={() => onChange(o.value)}>
-            {o.label}
+            {on ? '✓ ' : ''}{o.label}
           </button>
         );
       })}

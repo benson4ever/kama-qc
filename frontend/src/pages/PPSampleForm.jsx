@@ -134,7 +134,7 @@ export default function PPSampleForm() {
 
       <div className="sticky-actions row between">
         {!isNew ? <button className="btn danger" onClick={remove} disabled={busy}>Delete</button> : <span />}
-        <button className="btn primary" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
+        <button className="btn cta" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
       </div>
 
       <Lightbox photo={lightbox} onClose={() => setLightbox(null)} />

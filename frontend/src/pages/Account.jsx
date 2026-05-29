@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import { api } from '../api/client';
 
 export default function Account() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [cur, setCur] = useState('');
   const [nw, setNw] = useState('');
   const [c2, setC2] = useState('');
@@ -36,6 +36,7 @@ export default function Account() {
           <span className="muted">{user && user.email}</span>
           <span className="badge muted" style={{ alignSelf: 'flex-start' }}>{user && user.role}</span>
         </div>
+        <button className="btn danger" style={{ marginTop: '0.8rem' }} onClick={logout}>Log out</button>
       </div>
       <h2>Change password</h2>
       <form className="card" onSubmit={submit}>
@@ -44,7 +45,7 @@ export default function Account() {
         <label className="field"><span>Current password</span><input type="password" value={cur} onChange={(e) => setCur(e.target.value)} required /></label>
         <label className="field"><span>New password (min 8 characters)</span><input type="password" value={nw} onChange={(e) => setNw(e.target.value)} required /></label>
         <label className="field"><span>Confirm new password</span><input type="password" value={c2} onChange={(e) => setC2(e.target.value)} required /></label>
-        <button className="btn primary" disabled={busy}>Update password</button>
+        <button className="btn cta" disabled={busy}>Update password</button>
       </form>
     </div>
   );
