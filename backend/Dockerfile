@@ -3,6 +3,7 @@
 # ---------- Stage 1: build the frontend ----------
 FROM node:20-alpine AS frontend
 WORKDIR /frontend
+ENV NODE_OPTIONS=--max-old-space-size=768
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./

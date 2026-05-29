@@ -17,3 +17,6 @@ backup/*.log
 
 # os
 .DS_Store
+
+# detached deploy log
+.deploy.log
