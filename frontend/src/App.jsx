@@ -6,8 +6,10 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import PPSampleList from './pages/PPSampleList';
 import PPSampleForm from './pages/PPSampleForm';
+import PPSampleDetail from './pages/PPSampleDetail';
 import InspectionList from './pages/InspectionList';
 import InspectionForm from './pages/InspectionForm';
+import InspectionDetail from './pages/InspectionDetail';
 import Admin from './pages/Admin';
 import Account from './pages/Account';
 
@@ -39,10 +41,12 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/pp-samples" element={<PPSampleList />} />
         <Route path="/pp-samples/new" element={<PPSampleForm />} />
-        <Route path="/pp-samples/:id" element={<PPSampleForm />} />
+        <Route path="/pp-samples/:id" element={<PPSampleDetail />} />
+        <Route path="/pp-samples/:id/edit" element={<PPSampleForm />} />
         <Route path="/inspections" element={<InspectionList />} />
         <Route path="/inspections/new" element={<InspectionForm />} />
-        <Route path="/inspections/:id" element={<InspectionForm />} />
+        <Route path="/inspections/:id" element={<InspectionDetail />} />
+        <Route path="/inspections/:id/edit" element={<InspectionForm />} />
         <Route path="/account" element={<Account />} />
         <Route element={<AdminOnly />}>
           <Route path="/admin" element={<Admin />} />

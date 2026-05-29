@@ -195,3 +195,11 @@ table.data tr.clickable:hover { background: #f6f8f9; }
 
 .sticky-actions { position: sticky; bottom: 0; background: linear-gradient(transparent, var(--bg) 35%); padding: 1rem 0 0.5rem; display: flex; gap: 0.6rem; }
 .sticky-actions .btn.cta { flex: 1; }
+
+/* ---------- report / detail view ---------- */
+.report-top { margin-bottom: 0.75rem; }
+.report-field { padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+.report-field:last-child { border-bottom: none; }
+.report-field .k { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.15rem; }
+.report-field .v { font-size: 1rem; }
+.photo-item .cap-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; word-break: break-word; }

@@ -77,7 +77,7 @@ export default function PPSampleForm() {
         if (p.blob) await api.upload(`/pp-samples/${sampleId}/photos`, photoFormData(p));
       }
       if (isNew) discard();
-      navigate('/pp-samples');
+      navigate(`/pp-samples/${sampleId}`);
     } catch (e) {
       setErr(e.message);
       setBusy(false);
@@ -102,6 +102,9 @@ export default function PPSampleForm() {
 
   return (
     <div>
+      <div className="report-top row between">
+        <button type="button" className="btn" onClick={() => navigate(isNew ? '/pp-samples' : `/pp-samples/${id}`)}>‹ Cancel</button>
+      </div>
       <h1>{isNew ? 'New PP sample' : 'Edit PP sample'}</h1>
       {draftRestored && <div className="notice">Restored an unsaved draft.</div>}
       {err && <div className="error">{err}</div>}

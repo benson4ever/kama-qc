@@ -158,7 +158,7 @@ export default function InspectionForm() {
       }
 
       if (isNew) discard();
-      navigate('/inspections');
+      navigate(`/inspections/${inspId}`);
     } catch (e) {
       setErr(e.message); setBusy(false);
     }
@@ -175,6 +175,9 @@ export default function InspectionForm() {
 
   return (
     <div>
+      <div className="report-top row between">
+        <button type="button" className="btn" onClick={() => navigate(isNew ? '/inspections' : `/inspections/${id}`)}>‹ Cancel</button>
+      </div>
       <h1>{isNew ? 'New factory inspection' : 'Edit inspection'}</h1>
       {draftRestored && <div className="notice">Restored an unsaved draft.</div>}
       {err && <div className="error">{err}</div>}
