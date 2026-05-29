@@ -53,7 +53,7 @@ export default function DefectChecklist({
     );
   };
 
-  const Group = ({ title, cls, rows }) => (
+  const renderGroup = (title, cls, rows) => (
     <div>
       <div className="defect-group-title">
         <h3 style={{ margin: 0 }}>{title}</h3>
@@ -70,8 +70,8 @@ export default function DefectChecklist({
         <input placeholder="Search defects (EN / 中文)…" value={q} onChange={(e) => setQ(e.target.value)} />
       </div>
 
-      <Group title="Major 主要" cls="major" rows={groups.major} />
-      <Group title="Minor 次要" cls="minor" rows={groups.minor} />
+      {renderGroup('Major 主要', 'major', groups.major)}
+      {renderGroup('Minor 次要', 'minor', groups.minor)}
 
       <div className="defect-group-title">
         <h3 style={{ margin: 0 }}>Custom issues</h3>
