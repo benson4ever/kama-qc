@@ -1,0 +1,33 @@
+// Standard defect catalogue (spec section 6). sort_order ascending as listed.
+module.exports = [
+  // ---- Major ----
+  { code: 'holes', name_zh: '破洞', name_en: 'Holes', classification: 'major' },
+  { code: 'elastic_exposed', name_zh: '橡筋外露', name_en: 'Elastic exposed', classification: 'major' },
+  { code: 'elastic_damaged', name_zh: '橡筋破损', name_en: 'Elastic damaged', classification: 'major' },
+  { code: 'spandex_exposed', name_zh: '氨纶丝外露', name_en: 'Spandex exposed', classification: 'major' },
+  { code: 'leg_stretch', name_zh: '脚口拉伸超标', name_en: 'Leg opening stretch out of spec', classification: 'major' },
+  { code: 'measurement_tolerance', name_zh: '尺寸超公差', name_en: 'Measurements out of tolerance', classification: 'major' },
+  { code: 'front_deformed', name_zh: '前U变形', name_en: 'Front panel deformed', classification: 'major' },
+  { code: 'mesh_distorted', name_zh: '后幅网布变形', name_en: 'Back mesh panel distorted', classification: 'major' },
+  { code: 'size_label_damaged', name_zh: '小标破损', name_en: 'Size label damaged', classification: 'major' },
+  { code: 'care_label_issue', name_zh: '洗水唛问题', name_en: 'Care label issues', classification: 'major' },
+  { code: 'skipped_stitch', name_zh: '跳针', name_en: 'Skipped stitches', classification: 'major' },
+  { code: 'four_needle_six_thread', name_zh: '四针六线问题', name_en: 'Four-needle six-thread issue', classification: 'major' },
+  { code: 'oil_stain_major', name_zh: '油污/脏污（大）', name_en: 'Oil stain / dirt (large)', classification: 'major' },
+  // ---- Minor ----
+  { code: 'loose_threads', name_zh: '线头', name_en: 'Loose threads', classification: 'minor' },
+  { code: 'raw_edges', name_zh: '毛边', name_en: 'Raw edges', classification: 'minor' },
+  { code: 'trimming_excess', name_zh: '飞边', name_en: 'Trimming excess', classification: 'minor' },
+  { code: 'snag', name_zh: '勾丝', name_en: 'Snag', classification: 'minor' },
+  { code: 'elastic_snag', name_zh: '橡筋勾丝', name_en: 'Elastic snag', classification: 'minor' },
+  { code: 'front_misaligned', name_zh: '前U歪斜', name_en: 'Front panel misaligned', classification: 'minor' },
+  { code: 'front_rippling', name_zh: '前U起浪', name_en: 'Front panel rippling', classification: 'minor' },
+  { code: 'mesh_off_center', name_zh: '后幅网布不居中', name_en: 'Back mesh panel off-center', classification: 'minor' },
+  { code: 'size_label_crooked', name_zh: '小标歪斜/鼓包', name_en: 'Size label crooked/bubbling', classification: 'minor' },
+  { code: 'uneven_overlock', name_zh: '重线不齐', name_en: 'Uneven overlock', classification: 'minor' },
+  { code: 'mixed_yarn', name_zh: '杂纱/粗纱', name_en: 'Mixed/coarse yarn', classification: 'minor' },
+  { code: 'brand_label_issue', name_zh: '祺唛问题', name_en: 'Brand label issues', classification: 'minor' },
+  { code: 'oil_stain_minor', name_zh: '油污/脏污（小）', name_en: 'Oil stain (small)', classification: 'minor' },
+  { code: 'needle_holes', name_zh: '针孔', name_en: 'Needle holes', classification: 'minor' },
+  { code: 'creases', name_zh: '皱褶', name_en: 'Creases/wrinkles', classification: 'minor' },
+];

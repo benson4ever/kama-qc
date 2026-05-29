@@ -1,0 +1,19 @@
+# secrets
+.env
+
+# node
+node_modules/
+npm-debug.log*
+
+# build output
+frontend/dist/
+backend/public/
+
+# uploads (live in docker volume, never in git)
+uploads/
+backup/*.sql
+backup/*.tar.gz
+backup/*.log
+
+# os
+.DS_Store

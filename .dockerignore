@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+backend/public
+.git
+.env
+backup/*.sql
+backup/*.tar.gz
+uploads
