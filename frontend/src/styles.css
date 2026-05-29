@@ -203,3 +203,9 @@ table.data tr.clickable:hover { background: #f6f8f9; }
 .report-field .k { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.15rem; }
 .report-field .v { font-size: 1rem; }
 .photo-item .cap-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; word-break: break-word; }
+
+/* ---------- list filters ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 1rem; }
+.filters > input, .filters > select { flex: 1 1 150px; min-width: 120px; }
+.filters .clear { flex: 0 0 auto; }
+.result-count { margin: 0 0 0.75rem; font-size: 0.85rem; }
