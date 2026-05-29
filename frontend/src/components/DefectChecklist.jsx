@@ -21,13 +21,10 @@ export default function DefectChecklist({
       (d.name_en && d.name_en.toLowerCase().includes(query)) ||
       (d.name_zh && d.name_zh.includes(q.trim())) ||
       (d.code && d.code.toLowerCase().includes(query));
-    const build = (cls) =>
-      defects
-        .filter((d) => d.classification === cls && match(d))
-        // ticked rows pinned to the top of their group
-        .sort((a, b) => (selected[b.id] ? 1 : 0) - (selected[a.id] ? 1 : 0));
+    // rows stay in their catalogue order; ticking just expands a row in place
+    const build = (cls) => defects.filter((d) => d.classification === cls && match(d));
     return { major: build('major'), minor: build('minor') };
-  }, [defects, selected, q]);
+  }, [defects, q]);
 
   const renderRow = (d) => {
     const sel = selected[d.id];
