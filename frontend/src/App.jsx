@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import NavBar from './components/NavBar';
+import RouteResume from './components/RouteResume';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import PPSampleList from './pages/PPSampleList';
@@ -30,6 +31,8 @@ function AdminOnly() {
 
 export default function App() {
   return (
+    <>
+    <RouteResume />
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Protected />}>
@@ -47,5 +50,6 @@ export default function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
