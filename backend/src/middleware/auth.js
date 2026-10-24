@@ -2,14 +2,50 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { httpError } = require('./error');
 
-// Verify the JWT and attach req.user = { id, role, email }.
-function requireAuth(req, res, next) {
+// Photos are loaded by plain <img> tags, which cannot send an Authorization
+// header, so the same JWT is also kept in an HttpOnly cookie scoped to
+// /api/uploads (set at login and by POST /api/auth/photo-session).
+const PHOTO_COOKIE = 'qc_photo';
+
+function readCookie(req, name) {
+  const raw = req.headers.cookie || '';
+  for (const part of raw.split(';')) {
+    const i = part.indexOf('=');
+    if (i < 0) continue;
+    if (part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
+  }
+  return null;
+}
+
+function bearerToken(req) {
   const header = req.headers.authorization || '';
   const match = header.match(/^Bearer (.+)$/i);
-  if (!match) return next(httpError(401, 'Authentication required'));
+  return match ? match[1] : null;
+}
+
+function attachUser(req, token) {
+  const payload = jwt.verify(token, config.jwt.secret);
+  req.user = { id: payload.sub, role: payload.role, email: payload.email };
+}
+
+// Verify the JWT and attach req.user = { id, role, email }.
+function requireAuth(req, res, next) {
+  const token = bearerToken(req);
+  if (!token) return next(httpError(401, 'Authentication required'));
   try {
-    const payload = jwt.verify(match[1], config.jwt.secret);
-    req.user = { id: payload.sub, role: payload.role, email: payload.email };
+    attachUser(req, token);
+    next();
+  } catch (e) {
+    next(httpError(401, 'Invalid or expired session'));
+  }
+}
+
+// Like requireAuth but also accepts the photo cookie (for <img> requests).
+function requirePhotoAuth(req, res, next) {
+  const token = bearerToken(req) || readCookie(req, PHOTO_COOKIE);
+  if (!token) return next(httpError(401, 'Authentication required'));
+  try {
+    attachUser(req, token);
     next();
   } catch (e) {
     next(httpError(401, 'Invalid or expired session'));
@@ -23,4 +59,4 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin };
+module.exports = { requireAuth, requirePhotoAuth, requireAdmin, bearerToken, PHOTO_COOKIE };

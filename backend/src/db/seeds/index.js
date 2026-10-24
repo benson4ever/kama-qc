@@ -3,25 +3,11 @@ const { pool } = require('../pool');
 const config = require('../../config');
 const defects = require('./defects');
 
-const SUPPLIERS = [
-  { name: 'Zhongshan Best', name_zh: null },
-  { name: 'Dongguan Longest', name_zh: null },
-  { name: 'Nantong Tianhong', name_zh: null },
-];
-
 // All seeds are idempotent: ON CONFLICT DO NOTHING. Re-running never
 // overwrites an existing row, resets a password, or duplicates data.
+// Suppliers are managed via the Admin page and are no longer seeded.
 async function runSeeds() {
   console.log('[seed] seeding reference data (idempotent)...');
-
-  // suppliers
-  for (const s of SUPPLIERS) {
-    await pool.query(
-      `INSERT INTO suppliers (name, name_zh) VALUES ($1, $2)
-       ON CONFLICT (name) DO NOTHING`,
-      [s.name, s.name_zh]
-    );
-  }
 
   // defect catalogue
   let order = 1;

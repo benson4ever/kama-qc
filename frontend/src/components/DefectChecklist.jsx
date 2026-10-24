@@ -39,7 +39,7 @@ export default function DefectChecklist({
           <div className="detail">
             <label className="field" style={{ margin: 0 }}>
               <span>pcs found</span>
-              <input type="number" min="0" inputMode="numeric"
+              <input type="number" min="0" inputMode="numeric" placeholder="0"
                 value={sel.pcs_found}
                 onChange={(e) => onChangePcs(d.id, e.target.value)} />
             </label>
@@ -74,8 +74,8 @@ export default function DefectChecklist({
       {renderGroup('Minor 次要', 'minor', groups.minor)}
 
       <div className="defect-group-title">
-        <h3 style={{ margin: 0 }}>Custom issues</h3>
-        <button type="button" className="btn small" onClick={onAddCustom}>+ Add custom issue</button>
+        <h3 style={{ margin: 0 }}>Other issues</h3>
+        <button type="button" className="btn small" onClick={onAddCustom}>+ Add other issue</button>
       </div>
       {customs.map((cst) => (
         <div className="defect-row ticked" key={cst.key}>
@@ -85,10 +85,18 @@ export default function DefectChecklist({
               onChange={(e) => onChangeCustom(cst.key, { custom_description: e.target.value })} />
             <button type="button" className="rm" style={{ position: 'static' }} onClick={() => onRemoveCustom(cst.key)}>×</button>
           </div>
+          <label className="field" style={{ margin: '0.5rem 0 0.3rem' }}>
+            <span>Severity</span>
+            <select value={cst.classification || ''} onChange={(e) => onChangeCustom(cst.key, { classification: e.target.value })}>
+              <option value="">Other (unclassified)</option>
+              <option value="major">Major 主要</option>
+              <option value="minor">Minor 次要</option>
+            </select>
+          </label>
           <div className="detail">
             <label className="field" style={{ margin: 0 }}>
               <span>pcs found</span>
-              <input type="number" min="0" inputMode="numeric"
+              <input type="number" min="0" inputMode="numeric" placeholder="0"
                 value={cst.pcs_found}
                 onChange={(e) => onChangeCustom(cst.key, { pcs_found: e.target.value })} />
             </label>

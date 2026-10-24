@@ -39,8 +39,8 @@ export default function PPSampleList() {
 
   return (
     <div>
-      <div className="row between"><h1>PP samples</h1>
-        <button className="btn primary" onClick={() => navigate('/pp-samples/new')}>+ New</button>
+      <div className="row between"><h1 style={{ margin: 0 }}>PP samples</h1>
+        <button className="btn primary" onClick={() => navigate('/pp-samples/new')}>New PP sample</button>
       </div>
       {err && <div className="error">{err}</div>}
 
@@ -54,22 +54,22 @@ export default function PPSampleList() {
         {hasFilter ? <button className="btn clear" onClick={() => { setQ(''); setFactory(''); setPo(''); }}>Clear</button> : null}
       </div>
 
-      {items && <p className="muted result-count">{filtered.length} of {items.length}</p>}
+      {items && hasFilter && <p className="muted result-count">{filtered.length} of {items.length}</p>}
       {items && filtered.length === 0 && <p className="muted">No matching PP samples.</p>}
-      {filtered.map((s) => (
-        <div className="card clickable" key={s.id} onClick={() => navigate(`/pp-samples/${s.id}`)}>
-          <div className="row between">
-            <div className="stack">
-              <strong>{s.supplier_name}{s.style_id ? ` · ${s.style_id}` : ''}</strong>
-              <span className="muted">{s.po_number || '—'} · {fmtDate(s.created_at)}{s.created_by_name ? ` · ${s.created_by_name}` : ''}</span>
-            </div>
-            <div className="stack" style={{ alignItems: 'flex-end' }}>
+      {filtered.length > 0 && (
+        <div className="list-group">
+          {filtered.map((s) => (
+            <div className="list-row" key={s.id} onClick={() => navigate(`/pp-samples/${s.id}`)}>
+              <div className="stack grow">
+                <span className="t">{s.supplier_name}{s.style_id ? <span className="muted" style={{ fontWeight: 400 }}> · {s.style_id}</span> : null}</span>
+                <span className="s">{s.po_number || '—'} · {fmtDate(s.created_at)}{s.created_by_name ? ` · ${s.created_by_name}` : ''}</span>
+              </div>
+              {s.photo_count > 0 && <span className="chip">{s.photo_count} photo{s.photo_count === 1 ? '' : 's'}</span>}
               <span className={`badge ${s.result}`}>{resultLabel(s.result)}</span>
-              {s.photo_count > 0 && <span className="muted" style={{ fontSize: '.8rem' }}>📷 {s.photo_count}</span>}
             </div>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

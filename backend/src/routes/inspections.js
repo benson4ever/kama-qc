@@ -13,6 +13,13 @@ router.post('/', asyncHandler(c.create));
 router.patch('/:id', asyncHandler(c.update));
 router.delete('/:id', asyncHandler(c.remove));
 
+router.post('/:id/photos', upload.single('photo'), asyncHandler(c.addPhoto));
+router.delete('/:id/photos/:photoId', asyncHandler(c.deletePhoto));
+
+router.post('/:id/products', asyncHandler(c.addProduct));
+router.patch('/:id/products/:productId', asyncHandler(c.updateProduct));
+router.delete('/:id/products/:productId', asyncHandler(c.removeProduct));
+
 router.post('/:id/issues', asyncHandler(c.addIssue));
 router.patch('/:id/issues/:issueId', asyncHandler(c.updateIssue));
 router.delete('/:id/issues/:issueId', asyncHandler(c.removeIssue));

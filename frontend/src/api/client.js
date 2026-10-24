@@ -42,13 +42,22 @@ export const api = {
   upload: (p, formData) => request(p, { method: 'POST', body: formData }),
 };
 
-// Fetch a protected upload (with the JWT) and return an object URL for <img>.
-export async function fetchObjectUrl(filePath) {
+// Fetch a protected file (with the JWT) and hand it to the browser as a download.
+export async function downloadFile(path, fallbackName) {
   const token = getToken();
-  const res = await fetch(`/api/uploads/${filePath}`, {
+  const res = await fetch(`/api${path}`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
-  if (!res.ok) throw new Error('Failed to load image');
+  if (!res.ok) throw new ApiError('Export failed', res.status);
+  const dispo = res.headers.get('content-disposition') || '';
+  const m = dispo.match(/filename="([^"]+)"/);
   const blob = await res.blob();
-  return URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (m && m[1]) || fallbackName || 'export.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }

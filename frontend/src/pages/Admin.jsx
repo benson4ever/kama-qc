@@ -30,6 +30,7 @@ function useList(path) {
 function UsersAdmin() {
   const { items, err, setErr, reload } = useList('/users');
   const [f, setF] = useState({ email: '', name: '', name_zh: '', role: 'staff', password: '' });
+  const [edits, setEdits] = useState({});
   const [busy, setBusy] = useState(false);
 
   async function create(e) {
@@ -40,6 +41,7 @@ function UsersAdmin() {
   async function patch(id, body) {
     try { await api.patch(`/users/${id}`, body); reload(); } catch (e) { setErr(e.message); }
   }
+  const ed = (id, u) => edits[id] || { name: u.name || '', name_zh: u.name_zh || '' };
 
   return (
     <div>
@@ -54,29 +56,36 @@ function UsersAdmin() {
             <option value="staff">staff</option><option value="admin">admin</option>
           </select>
           <input style={{ flex: '1 1 140px' }} placeholder="Password (min 8)" type="text" value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} required />
-          <button className="btn primary" disabled={busy}>Add</button>
+          <button className="btn" disabled={busy}>Add</button>
         </div>
       </form>
-      {items.map((u) => (
-        <div className="card" key={u.id}>
-          <div className="row between wrap" style={{ gap: '.5rem' }}>
-            <div className="stack">
-              <strong>{u.name || '—'} {u.name_zh && <span className="zh">{u.name_zh}</span>}</strong>
-              <span className="muted">{u.email}</span>
+      {items.map((u) => {
+        const e = ed(u.id, u);
+        return (
+          <div className="card" key={u.id}>
+            <div className="row between wrap" style={{ gap: '.5rem' }}>
+              <div className="row wrap" style={{ gap: '.5rem', flex: '1 1 260px' }}>
+                <input style={{ flex: '1 1 140px' }} placeholder="Name (EN)" value={e.name} onChange={(ev) => setEdits({ ...edits, [u.id]: { ...e, name: ev.target.value } })} />
+                <input style={{ flex: '1 1 110px' }} placeholder="中文" value={e.name_zh} onChange={(ev) => setEdits({ ...edits, [u.id]: { ...e, name_zh: ev.target.value } })} />
+                <button className="btn small" onClick={() => patch(u.id, e)}>Save</button>
+              </div>
+              <div className="row wrap" style={{ gap: '.5rem' }}>
+                <select value={u.role} onChange={(ev) => patch(u.id, { role: ev.target.value })}>
+                  <option value="staff">staff</option><option value="admin">admin</option>
+                </select>
+                <button className="btn small" onClick={() => patch(u.id, { active: !u.active })}>
+                  {u.active ? 'Deactivate' : 'Activate'}
+                </button>
+                <button className="btn small" onClick={() => { const p = prompt('New password (min 8 chars):'); if (p) patch(u.id, { password: p }); }}>Reset PW</button>
+              </div>
             </div>
-            <div className="row" style={{ gap: '.5rem' }}>
-              <select value={u.role} onChange={(e) => patch(u.id, { role: e.target.value })}>
-                <option value="staff">staff</option><option value="admin">admin</option>
-              </select>
-              <button className={`btn small ${u.active ? '' : 'primary'}`} onClick={() => patch(u.id, { active: !u.active })}>
-                {u.active ? 'Deactivate' : 'Activate'}
-              </button>
-              <button className="btn small" onClick={() => { const p = prompt('New password (min 8 chars):'); if (p) patch(u.id, { password: p }); }}>Reset PW</button>
+            <div className="row" style={{ gap: '.5rem', marginTop: '.4rem', alignItems: 'center' }}>
+              <span className="muted" style={{ fontSize: '.85rem' }}>{u.email}</span>
+              {!u.active && <span className="badge muted">inactive</span>}
             </div>
           </div>
-          {!u.active && <span className="badge muted" style={{ marginTop: '.4rem' }}>inactive</span>}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -92,6 +101,10 @@ function SuppliersAdmin() {
     try { await api.post('/suppliers', f); setF({ name: '', name_zh: '' }); reload(); } catch (e) { setErr(e.message); }
   }
   async function patch(id, body) { try { await api.patch(`/suppliers/${id}`, body); reload(); } catch (e) { setErr(e.message); } }
+  async function remove(id) {
+    if (!window.confirm('Delete this supplier? This cannot be undone.')) return;
+    try { await api.del(`/suppliers/${id}`); reload(); } catch (e) { setErr(e.message); }
+  }
   const ed = (id, s) => edits[id] || { name: s.name, name_zh: s.name_zh || '' };
 
   return (
@@ -100,7 +113,7 @@ function SuppliersAdmin() {
       <form className="card row wrap" style={{ gap: '.5rem' }} onSubmit={create}>
         <input style={{ flex: '1 1 180px' }} placeholder="Supplier name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} required />
         <input style={{ flex: '1 1 140px' }} placeholder="名称 (中文)" value={f.name_zh} onChange={(e) => setF({ ...f, name_zh: e.target.value })} />
-        <button className="btn primary">Add supplier</button>
+        <button className="btn">Add supplier</button>
       </form>
       {items.map((s) => {
         const e = ed(s.id, s);
@@ -109,8 +122,9 @@ function SuppliersAdmin() {
             <div className="row wrap" style={{ gap: '.5rem' }}>
               <input style={{ flex: '1 1 160px' }} value={e.name} onChange={(ev) => setEdits({ ...edits, [s.id]: { ...e, name: ev.target.value } })} />
               <input style={{ flex: '1 1 120px' }} placeholder="中文" value={e.name_zh} onChange={(ev) => setEdits({ ...edits, [s.id]: { ...e, name_zh: ev.target.value } })} />
-              <button className="btn small primary" onClick={() => patch(s.id, e)}>Save</button>
-              <button className={`btn small ${s.active ? '' : 'primary'}`} onClick={() => patch(s.id, { active: !s.active })}>{s.active ? 'Deactivate' : 'Activate'}</button>
+              <button className="btn small" onClick={() => patch(s.id, e)}>Save</button>
+              <button className="btn small" onClick={() => patch(s.id, { active: !s.active })}>{s.active ? 'Deactivate' : 'Activate'}</button>
+              <button className="btn small danger" onClick={() => remove(s.id)}>Delete</button>
               {!s.active && <span className="badge muted">inactive</span>}
             </div>
           </div>
@@ -149,7 +163,7 @@ function DefectsAdmin() {
           <select value={d.classification} onChange={(ev) => patch(d.id, { classification: ev.target.value })}>
             <option value="major">major</option><option value="minor">minor</option>
           </select>
-          <button className="btn small primary" onClick={() => patch(d.id, e)}>Save</button>
+          <button className="btn small" onClick={() => patch(d.id, e)}>Save</button>
           <button className="btn small" onClick={() => patch(d.id, { active: !d.active })}>{d.active ? 'Hide' : 'Show'}</button>
         </div>
       </div>
@@ -167,7 +181,7 @@ function DefectsAdmin() {
           <option value="major">major</option><option value="minor">minor</option>
         </select>
         <input style={{ flex: '0 0 70px' }} type="number" placeholder="#" value={f.sort_order} onChange={(e) => setF({ ...f, sort_order: e.target.value })} />
-        <button className="btn primary">Add defect</button>
+        <button className="btn">Add defect</button>
       </form>
       <h2>Major 主要</h2>
       {group('major').map(Row)}

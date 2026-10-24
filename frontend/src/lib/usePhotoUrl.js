@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react';
-import { fetchObjectUrl } from '../api/client';
 
-// Resolve a photo to a displayable URL: local blob -> object URL,
-// server photo (file_path) -> authenticated fetch -> object URL.
-export function usePhotoUrl(photo) {
-  const [url, setUrl] = useState((photo && photo.previewUrl) || null);
+/* Saved photos are plain, cacheable URLs; auth is the qc_photo cookie the
+   server sets at login (see useAuth), so <img> tags load them directly and
+   the browser keeps them for a year. size 'thumb' = small grid JPEG,
+   'full' = the original (lightbox). */
+export function photoUrl(filePath, size = 'full') {
+  return `/api/uploads/${filePath}${size === 'thumb' ? '?size=thumb' : ''}`;
+}
+
+function resolve(photo, size) {
+  if (!photo) return null;
+  if (photo.previewUrl) return photo.previewUrl;
+  if (photo.file_path) return photoUrl(photo.file_path, size);
+  return null;
+}
+
+// Resolve a photo to a displayable URL: local (unsaved) blob -> object URL,
+// server photo (file_path) -> direct URL.
+export function usePhotoUrl(photo, size = 'full') {
+  const [url, setUrl] = useState(() => resolve(photo, size));
   useEffect(() => {
-    let active = true; let revoke = null;
-    if (!photo) { setUrl(null); return; }
-    if (photo.previewUrl) { setUrl(photo.previewUrl); return; }
-    if (photo.blob) {
-      const u = URL.createObjectURL(photo.blob); revoke = u; setUrl(u);
-    } else if (photo.file_path) {
-      fetchObjectUrl(photo.file_path).then((u) => { if (active) { revoke = u; setUrl(u); } }).catch(() => {});
+    if (photo && photo.blob && !photo.previewUrl) {
+      const u = URL.createObjectURL(photo.blob);
+      setUrl(u);
+      return () => URL.revokeObjectURL(u);
     }
-    return () => { active = false; if (revoke) URL.revokeObjectURL(revoke); };
-  }, [photo && photo.blob, photo && photo.file_path, photo && photo.previewUrl]);
+    setUrl(resolve(photo, size));
+    return undefined;
+  }, [photo && photo.blob, photo && photo.file_path, photo && photo.previewUrl, size]);
   return url;
 }

@@ -56,21 +56,21 @@ async function getOne(req, res) {
 }
 
 async function create(req, res) {
-  const { supplier_id, po_number, style_id, fit, issues_text, result } = req.body || {};
+  const { supplier_id, po_number, style_id, fit, issues_text, comment, result } = req.body || {};
   if (!supplier_id) throw httpError(400, 'Supplier is required');
   const r = normResult(result);
   if (!r) throw httpError(400, "result must be 'approved' or 'not_approved'");
   const { rows } = await pool.query(
-    `INSERT INTO pp_samples (supplier_id, po_number, style_id, fit, issues_text, result, created_by)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-    [supplier_id, po_number || null, style_id || null, fit || null, issues_text || null, r, req.user.id]
+    `INSERT INTO pp_samples (supplier_id, po_number, style_id, fit, issues_text, comment, result, created_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+    [supplier_id, po_number || null, style_id || null, fit || null, issues_text || null, comment || null, r, req.user.id]
   );
   res.status(201).json(await withDetail(rows[0].id));
 }
 
 async function update(req, res) {
   await getOwned(req.params.id, req.user);
-  const { supplier_id, po_number, style_id, fit, issues_text, result } = req.body || {};
+  const { supplier_id, po_number, style_id, fit, issues_text, comment, result } = req.body || {};
   const sets = []; const vals = []; let i = 1;
   const set = (c, v) => { sets.push(`${c} = $${i++}`); vals.push(v); };
   if (supplier_id !== undefined) set('supplier_id', supplier_id);
@@ -78,6 +78,7 @@ async function update(req, res) {
   if (style_id !== undefined) set('style_id', style_id);
   if (fit !== undefined) set('fit', fit);
   if (issues_text !== undefined) set('issues_text', issues_text);
+  if (comment !== undefined) set('comment', comment);
   if (result !== undefined) {
     const r = normResult(result);
     if (!r) throw httpError(400, 'Invalid result');
@@ -124,4 +125,4 @@ async function deletePhoto(req, res) {
   res.json({ ok: true });
 }
 
-module.exports = { list, getOne, create, update, remove, addPhoto, deletePhoto };
+module.exports = { list, getOne, create, update, remove, addPhoto, deletePhoto, withDetail };

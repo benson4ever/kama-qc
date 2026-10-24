@@ -103,35 +103,40 @@ export default function PPSampleForm() {
   return (
     <div>
       <div className="report-top row between">
-        <button type="button" className="btn" onClick={() => navigate(isNew ? '/pp-samples' : `/pp-samples/${id}`)}>‹ Cancel</button>
+        <button type="button" className="btn" onClick={() => { if (isNew) discard(); navigate(isNew ? '/pp-samples' : `/pp-samples/${id}`); }}>‹ Cancel</button>
       </div>
       <h1>{isNew ? 'New PP sample' : 'Edit PP sample'}</h1>
       {draftRestored && <div className="notice">Restored an unsaved draft.</div>}
       {err && <div className="error">{err}</div>}
 
-      <label className="field"><span>Supplier</span>
-        <select value={form.supplier_id} onChange={(e) => set('supplier_id', e.target.value)}>
-          <option value="">Select supplier…</option>
-          {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}{s.name_zh ? ` (${s.name_zh})` : ''}</option>)}
-        </select>
-      </label>
-      <label className="field"><span>PO number</span>
-        <input value={form.po_number} onChange={(e) => set('po_number', e.target.value)} placeholder="Free text" />
-      </label>
-      <label className="field"><span>Style ID</span>
-        <input value={form.style_id} onChange={(e) => set('style_id', e.target.value)} />
-      </label>
-      <label className="field"><span>Fit</span>
-        <input value={form.fit} onChange={(e) => set('fit', e.target.value)} />
-      </label>
-      <label className="field"><span>Issues found</span>
-        <textarea value={form.issues_text} onChange={(e) => set('issues_text', e.target.value)} />
-      </label>
+      <h2>Details</h2>
+      <div className="fset">
+        <label className="field"><span>Supplier</span>
+          <select value={form.supplier_id} onChange={(e) => set('supplier_id', e.target.value)}>
+            <option value="">Select supplier…</option>
+            {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}{s.name_zh ? ` (${s.name_zh})` : ''}</option>)}
+          </select>
+        </label>
+        <label className="field"><span>PO number</span>
+          <input value={form.po_number} onChange={(e) => set('po_number', e.target.value)} placeholder="Free text" />
+        </label>
+        <label className="field"><span>Style ID</span>
+          <input value={form.style_id} onChange={(e) => set('style_id', e.target.value)} />
+        </label>
+        <label className="field"><span>Style / 款式</span>
+          <input value={form.fit} onChange={(e) => set('fit', e.target.value)} />
+        </label>
+        <label className="field" style={{ marginBottom: 0 }}><span>Comments / Issues Found</span>
+          <textarea value={form.issues_text} onChange={(e) => set('issues_text', e.target.value)} />
+        </label>
+      </div>
 
-      <label className="field"><span>Photos</span></label>
-      <PhotoUploader photos={photos} onChange={onPhotosChange} onOpen={setLightbox} />
+      <h2>Photos</h2>
+      <div className="fset">
+        <PhotoUploader photos={photos} onChange={onPhotosChange} onOpen={setLightbox} />
+      </div>
 
-      <label className="field" style={{ marginTop: '1rem' }}><span>Result</span></label>
+      <h2>Result</h2>
       <ResultToggle value={form.result} onChange={(v) => set('result', v)}
         options={[{ value: 'approved', label: 'Approved', color: 'green' }, { value: 'not_approved', label: 'Not approved', color: 'red' }]} />
 

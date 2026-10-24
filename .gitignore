@@ -12,8 +12,12 @@ backend/public/
 # uploads (live in docker volume, never in git)
 uploads/
 backup/*.sql
+backup/*.sql.gz
 backup/*.tar.gz
 backup/*.log
+
+# editor/leftover files
+*.bak
 
 # os
 .DS_Store

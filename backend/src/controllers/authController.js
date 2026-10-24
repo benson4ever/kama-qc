@@ -3,9 +3,24 @@ const jwt = require('jsonwebtoken');
 const { pool } = require('../db/pool');
 const config = require('../config');
 const { httpError } = require('../middleware/error');
+const { bearerToken, PHOTO_COOKIE } = require('../middleware/auth');
 
 function publicUser(u) {
   return { id: u.id, email: u.email, name: u.name, name_zh: u.name_zh, role: u.role, active: u.active };
+}
+
+// Mirror the JWT into an HttpOnly cookie scoped to /api/uploads so plain
+// <img> tags can load photos (and the browser can cache them). Same lifetime as the JWT.
+const PHOTO_COOKIE_PATH = '/api/uploads';
+function setPhotoCookie(req, res, token) {
+  const payload = jwt.decode(token);
+  res.cookie(PHOTO_COOKIE, token, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: req.secure, // https in production (trust proxy is on); plain http only on local/staging
+    path: PHOTO_COOKIE_PATH,
+    expires: payload && payload.exp ? new Date(payload.exp * 1000) : undefined,
+  });
 }
 
 async function login(req, res) {
@@ -21,7 +36,20 @@ async function login(req, res) {
     config.jwt.secret,
     { expiresIn: config.jwt.expiresIn }
   );
+  setPhotoCookie(req, res, token);
   res.json({ token, user: publicUser(user) });
+}
+
+// Called by the frontend at app start (existing sessions have a JWT in
+// localStorage but may not have the cookie yet, e.g. before this feature).
+async function photoSession(req, res) {
+  setPhotoCookie(req, res, bearerToken(req));
+  res.json({ ok: true });
+}
+
+async function logout(req, res) {
+  res.clearCookie(PHOTO_COOKIE, { path: PHOTO_COOKIE_PATH });
+  res.json({ ok: true });
 }
 
 async function me(req, res) {
@@ -43,4 +71,4 @@ async function changePassword(req, res) {
   res.json({ ok: true });
 }
 
-module.exports = { login, me, changePassword, publicUser };
+module.exports = { login, me, changePassword, photoSession, logout, publicUser };

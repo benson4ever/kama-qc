@@ -3,8 +3,8 @@ import { uid } from '../lib/uid';
 import { usePhotoUrl } from '../lib/usePhotoUrl';
 
 function Thumb({ photo, onClick }) {
-  const url = usePhotoUrl(photo);
-  return <img src={url || ''} alt={photo.caption || ''} onClick={onClick} />;
+  const url = usePhotoUrl(photo, 'thumb');
+  return <img src={url || ''} alt={photo.caption || ''} loading="lazy" decoding="async" onClick={onClick} />;
 }
 
 // photos: array of { key?, id?, file_path?, blob?, caption }
@@ -36,7 +36,7 @@ export default function PhotoUploader({ photos = [], onChange, onOpen }) {
       ))}
       <label className="add-photo">
         +
-        <input type="file" accept="image/*" capture="environment" multiple onChange={addFiles} />
+        <input type="file" accept="image/*" multiple onChange={addFiles} />
       </label>
     </div>
   );

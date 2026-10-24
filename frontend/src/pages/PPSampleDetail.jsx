@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../api/client';
+import { api, downloadFile } from '../api/client';
 import { useAuth } from '../hooks/useAuth';
 import { fmtDate, resultLabel } from '../lib/format';
 import PhotoGallery from '../components/PhotoGallery';
@@ -15,8 +15,16 @@ export default function PPSampleDetail() {
   const { user } = useAuth();
   const [s, setS] = useState(null);
   const [err, setErr] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => { api.get(`/pp-samples/${id}`).then(setS).catch((e) => setErr(e.message)); }, [id]);
+
+  async function exportPdf() {
+    setExporting(true);
+    try { await downloadFile(`/pp-samples/${id}/pdf`); }
+    catch (e) { setErr(e.message); }
+    finally { setExporting(false); }
+  }
   if (err) return <div className="error">{err}</div>;
   if (!s) return <p className="muted">Loading…</p>;
   const canEdit = user && (user.role === 'admin' || user.id === s.created_by);
@@ -25,7 +33,10 @@ export default function PPSampleDetail() {
     <div>
       <div className="report-top row between">
         <button className="btn" onClick={() => navigate('/pp-samples')}>‹ Back</button>
-        {canEdit && <button className="btn primary" onClick={() => navigate(`/pp-samples/${id}/edit`)}>Edit</button>}
+        <div className="row" style={{ gap: '.5rem' }}>
+          <button className="btn" onClick={exportPdf} disabled={exporting}>{exporting ? 'Exporting…' : 'Export PDF'}</button>
+          {canEdit && <button className="btn" onClick={() => navigate(`/pp-samples/${id}/edit`)}>Edit</button>}
+        </div>
       </div>
 
       <div className="row between" style={{ alignItems: 'flex-start' }}>
@@ -36,12 +47,12 @@ export default function PPSampleDetail() {
       <div className="card" style={{ marginTop: '1rem' }}>
         <Field label="PO number">{s.po_number || '—'}</Field>
         <Field label="Style ID">{s.style_id || '—'}</Field>
-        <Field label="Fit">{s.fit || '—'}</Field>
-        <Field label="Issues found">{s.issues_text ? <span style={{ whiteSpace: 'pre-wrap' }}>{s.issues_text}</span> : '—'}</Field>
+        <Field label="Style / 款式">{s.fit || '—'}</Field>
+        <Field label="Comments / Issues Found">{s.issues_text ? <span style={{ whiteSpace: 'pre-wrap' }}>{s.issues_text}</span> : '—'}</Field>
         <Field label="Recorded">{fmtDate(s.created_at)}{s.created_by_name ? ` · ${s.created_by_name}` : ''}</Field>
       </div>
 
-      {s.photos && s.photos.length > 0 && (<><h2>Photos</h2><PhotoGallery photos={s.photos} /></>)}
+      {s.photos && s.photos.length > 0 && (<><h2>Photos</h2><div className="card"><PhotoGallery photos={s.photos} /></div></>)}
     </div>
   );
 }

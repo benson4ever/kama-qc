@@ -1,6 +1,7 @@
 // Compress an image File/Blob client-side using a canvas. Caps the largest
 // dimension and re-encodes as JPEG to keep factory-connection uploads small.
-export async function compressImage(file, { maxDim = 1600, quality = 0.7 } = {}) {
+// 2560/0.75 keeps small print (labels, measurement charts) readable.
+export async function compressImage(file, { maxDim = 2560, quality = 0.75 } = {}) {
   if (!file || !file.type || !file.type.startsWith('image/')) return file;
   const dataUrl = await readAsDataURL(file);
   const img = await loadImage(dataUrl);

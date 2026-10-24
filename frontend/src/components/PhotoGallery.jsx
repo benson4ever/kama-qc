@@ -3,10 +3,10 @@ import { usePhotoUrl } from '../lib/usePhotoUrl';
 import Lightbox from './Lightbox';
 
 function Thumb({ photo, onClick }) {
-  const url = usePhotoUrl(photo);
+  const url = usePhotoUrl(photo, 'thumb');
   return (
     <div className="photo-item">
-      <img src={url || ''} alt={photo.caption || ''} onClick={onClick} />
+      <img src={url || ''} alt={photo.caption || ''} loading="lazy" decoding="async" onClick={onClick} />
       {photo.caption ? <div className="cap-text">{photo.caption}</div> : null}
     </div>
   );

@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="13" fill="#0d4671"/>
-  <text x="32" y="34" text-anchor="middle" dominant-baseline="central"
-        font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700"
-        letter-spacing="1" fill="#ffffff">QC</text>
+  <!-- Rams/Braun mark: warm ink, minimal radius, geometric K in paper -->
+  <rect width="64" height="64" rx="4" fill="#25241F"/>
+  <g stroke="#FAF9F6" stroke-width="5.5" fill="none" stroke-linecap="square">
+    <path d="M25 19v26"/>
+    <path d="M41 19 26.5 32 41 45"/>
+  </g>
 </svg>

@@ -44,4 +44,17 @@ async function update(req, res) {
   }
 }
 
-module.exports = { list, create, update };
+async function remove(req, res) {
+  const { id } = req.params;
+  const ins = await pool.query('SELECT COUNT(*)::int AS n FROM inspections WHERE supplier_id = $1', [id]);
+  const pps = await pool.query('SELECT COUNT(*)::int AS n FROM pp_samples WHERE supplier_id = $1', [id]);
+  const nIns = ins.rows[0].n; const nPps = pps.rows[0].n;
+  if (nIns + nPps > 0) {
+    throw httpError(409, `Cannot delete: supplier is used by ${nIns} inspection(s) and ${nPps} PP sample(s). Deactivate it instead.`);
+  }
+  const { rowCount } = await pool.query('DELETE FROM suppliers WHERE id = $1', [id]);
+  if (!rowCount) throw httpError(404, 'Supplier not found');
+  res.status(204).end();
+}
+
+module.exports = { list, create, update, remove };
