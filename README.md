@@ -8,6 +8,31 @@ all in Docker, served behind Nginx Proxy Manager at `app.your-domain.example`.
 - All users see all entries; you edit/delete your own; admins edit/delete anything and manage
   users, suppliers and the defect catalogue.
 
+## Screenshots
+
+> Generated placeholder data — no real supplier, product, or customer information.
+
+**Dashboard** — defect rate trends, top defects, supplier breakdown, latest activity
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+**Inspection list** — filterable by factory, type, and PO number
+
+![Inspection list](docs/screenshots/inspection-list.png)
+
+**Inspection detail** — product photos, packaging photos, logged defects, PDF export
+
+![Inspection detail](docs/screenshots/inspection-detail.png)
+
+## Features
+
+- Inline and final inspections with pass/fail results, AQL-style major/minor defect tracking
+- Pre-production (PP) sample approvals
+- Per-product reference photos (front/back), packaging photos, measurement chart photos
+- PDF export for inspections and PP samples, with bundled CJK font support
+- Dashboard: defect-rate trends, top defects, supplier comparison, open-fail tracking
+- PO matching helper, data exports
+
 ---
 
 ## ⚠️ Data safety (read first)
@@ -36,8 +61,7 @@ cp .env.example .env
 #   set DB_PASSWORD, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD (and optional NEXTCLOUD_*)
 #   generate strong values, e.g.:  openssl rand -hex 32
 
-# 3. build & start
-docker compose build
+# 3. start (pulls the published image — see "Image & deploys" below)
 docker compose up -d
 
 # 4. watch it migrate + seed
@@ -59,12 +83,15 @@ existing user's password, so changing `ADMIN_PASSWORD` later has no effect once 
 
 ---
 
-## Standard upgrade flow
+## Image & deploys
+
+The published image is `ghcr.io/benson4ever/kama-qc-app:latest`, built and pushed automatically
+by GitHub Actions on every push to `master`. The server no longer builds from source — it pulls:
 
 ```bash
 git pull
-docker compose build
-docker compose up -d
+docker compose pull app
+docker compose up -d app
 ```
 
 Migrations apply additively on boot; **data volumes are untouched.**
@@ -134,6 +161,8 @@ sudo ufw allow 81     # NPM admin UI — consider restricting to your IP later
 backend/   Express API (/api), serves the built SPA, migrations + idempotent seeds
 frontend/  React + Vite PWA (mobile-first), IndexedDB draft autosave
 backup/    backup.sh (pg_dump + uploads archive, off-server push)
+docs/      screenshots used in this README
+.github/   Actions workflow: build + publish the Docker image to GHCR
 docker-compose.yml   postgres (qc_pgdata) + app (qc_uploads), app joins the `web` network
 ```
 
