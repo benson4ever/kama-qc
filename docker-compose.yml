@@ -16,9 +16,7 @@ services:
       retries: 12
 
   app:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    image: ghcr.io/benson4ever/kama-qc-app:latest
     container_name: qc_app
     restart: unless-stopped
     depends_on:
