@@ -197,7 +197,10 @@ export default function InspectionForm() {
       const cls = byId[k] && byId[k].classification;
       if (cls === 'major') major += n; else if (cls === 'minor') minor += n; else other += n;
     }
-    for (const c of customs) other += parseInt(c.pcs_found, 10) || 0;
+    for (const c of customs) {
+      const n = parseInt(c.pcs_found, 10) || 0;
+      if (c.classification === 'major') major += n; else if (c.classification === 'minor') minor += n; else other += n;
+    }
     return { major, minor, total: major + minor + other };
   }, [selected, customs, defects]);
   const orderQty = parseInt(form.total_order_qty, 10) || 0;
@@ -207,6 +210,9 @@ export default function InspectionForm() {
   async function save() {
     setErr('');
     if (!form.supplier_id) { setErr('Please choose a supplier.'); return; }
+    if (customs.some((c) => c.custom_description.trim() && c.classification !== 'major' && c.classification !== 'minor')) {
+      setErr('Please choose a severity (major or minor) for each other issue. 请为每个其他问题选择严重程度。'); return;
+    }
     setBusy(true);
     try {
       let inspId = id;
@@ -242,7 +248,7 @@ export default function InspectionForm() {
       }
       for (const c of customs) {
         if (!c.custom_description.trim()) continue;
-        desired.push({ issueId: c.issueId, payload: { custom_description: c.custom_description, pcs_found: c.pcs_found, classification: c.classification || null }, photos: c.photos, removedPhotoIds: c.removedPhotoIds || [] });
+        desired.push({ issueId: c.issueId, payload: { custom_description: c.custom_description, pcs_found: c.pcs_found, classification: c.classification }, photos: c.photos, removedPhotoIds: c.removedPhotoIds || [] });
       }
 
       for (const di of desired) {

@@ -159,7 +159,7 @@ async function render(insp, out) {
   const groups = [
     ['Major 主要', majors],
     ['Minor 次要', minors],
-    ['Other issues', insp.issues.filter((x) => !x.defect_id)],
+    ['Other issues', insp.issues.filter((x) => !x.defect_classification)],
   ];
   for (const [label, items] of groups) {
     if (!items.length) continue;

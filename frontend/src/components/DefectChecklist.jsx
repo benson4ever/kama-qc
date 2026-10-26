@@ -87,8 +87,8 @@ export default function DefectChecklist({
           </div>
           <label className="field" style={{ margin: '0.5rem 0 0.3rem' }}>
             <span>Severity</span>
-            <select value={cst.classification || ''} onChange={(e) => onChangeCustom(cst.key, { classification: e.target.value })}>
-              <option value="">Other (unclassified)</option>
+            <select required value={cst.classification || ''} onChange={(e) => onChangeCustom(cst.key, { classification: e.target.value })}>
+              <option value="" disabled>Select severity 选择严重程度…</option>
               <option value="major">Major 主要</option>
               <option value="minor">Minor 次要</option>
             </select>

@@ -26,11 +26,15 @@ function validateIssue(it) {
   if (!hasDefect && !hasCustom) {
     throw httpError(400, 'Each issue needs a standard defect or a custom description');
   }
+  const classification = hasDefect ? null : normClassification(it.classification);
+  if (!hasDefect && !classification) {
+    throw httpError(400, 'Custom issues need a severity (major or minor)');
+  }
   return {
     defect_id: hasDefect ? it.defect_id : null,
     custom_description: hasCustom ? String(it.custom_description).trim() : null,
     pcs_found: parseInt(it.pcs_found, 10) || 0,
-    classification: hasDefect ? null : normClassification(it.classification),
+    classification,
   };
 }
 
@@ -316,7 +320,11 @@ async function updateIssue(req, res) {
     sets.push(`custom_description = $${i++}`);
     vals.push(custom_description ? String(custom_description).trim() : null);
   }
-  if (classification !== undefined) { sets.push(`classification = $${i++}`); vals.push(normClassification(classification)); }
+  if (classification !== undefined) {
+    const cls = normClassification(classification);
+    if (!cls) throw httpError(400, 'Custom issues need a severity (major or minor)');
+    sets.push(`classification = $${i++}`); vals.push(cls);
+  }
   if (!sets.length) throw httpError(400, 'Nothing to update');
   vals.push(req.params.issueId, req.params.id);
   const { rowCount } = await pool.query(
