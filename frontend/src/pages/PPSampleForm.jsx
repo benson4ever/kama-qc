@@ -24,7 +24,8 @@ export default function PPSampleForm() {
   const [form, setForm] = useState(EMPTY);
   const [photos, setPhotos] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
-  const [lightbox, setLightbox] = useState(null);
+  const [lightbox, setLightbox] = useState(null); // { photo, photos }
+  const openLightbox = (photo, photos) => setLightbox({ photo, photos });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(isNew);
@@ -133,7 +134,7 @@ export default function PPSampleForm() {
 
       <h2>Photos</h2>
       <div className="fset">
-        <PhotoUploader photos={photos} onChange={onPhotosChange} onOpen={setLightbox} />
+        <PhotoUploader photos={photos} onChange={onPhotosChange} onOpen={openLightbox} />
       </div>
 
       <h2>Result</h2>
@@ -145,7 +146,7 @@ export default function PPSampleForm() {
         <button className="btn cta" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
       </div>
 
-      <Lightbox photo={lightbox} onClose={() => setLightbox(null)} />
+      <Lightbox photo={lightbox && lightbox.photo} photos={lightbox && lightbox.photos} onClose={() => setLightbox(null)} />
     </div>
   );
 }

@@ -51,7 +51,8 @@ export default function InspectionForm() {
   const [products, setProducts] = useState([]);    // { key, productId?, product_ref, front: [photos], back: [photos] }
   const [packaging, setPackaging] = useState([]);
   const [measurements, setMeasurements] = useState([]);
-  const [lightbox, setLightbox] = useState(null);
+  const [lightbox, setLightbox] = useState(null); // { photo, photos }
+  const openLightbox = (photo, photos) => setLightbox({ photo, photos });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(isNew);
@@ -323,9 +324,9 @@ export default function InspectionForm() {
             <input value={p.product_ref} onChange={(e) => changeProduct(p.key, { product_ref: e.target.value })} placeholder="Style no. / SKU / item ref" />
           </label>
           <label className="field"><span>Front</span></label>
-          <PhotoUploader photos={p.front} onChange={(next) => changeProduct(p.key, { front: next })} onOpen={setLightbox} />
+          <PhotoUploader photos={p.front} onChange={(next) => changeProduct(p.key, { front: next })} onOpen={openLightbox} />
           <label className="field"><span>Back</span></label>
-          <PhotoUploader photos={p.back} onChange={(next) => changeProduct(p.key, { back: next })} onOpen={setLightbox} />
+          <PhotoUploader photos={p.back} onChange={(next) => changeProduct(p.key, { back: next })} onOpen={openLightbox} />
         </div>
       ))}
       <button type="button" className="btn" onClick={addProduct}>+ Add product</button>
@@ -335,19 +336,19 @@ export default function InspectionForm() {
         defects={defects} selected={selected}
         onToggle={toggleDefect} onChangePcs={changePcs} onPhotos={changePhotos}
         customs={customs} onAddCustom={addCustom} onChangeCustom={changeCustom} onRemoveCustom={removeCustom}
-        onOpenPhoto={setLightbox}
+        onOpenPhoto={openLightbox}
       />
 
       <h2>Measurements</h2>
       <div className="fset">
         <p className="muted" style={{ margin: '0 0 0.25rem', fontSize: '0.85rem' }}>Photos of measurement charts.</p>
-        <PhotoUploader photos={measurements} onChange={changeMeasurements} onOpen={setLightbox} />
+        <PhotoUploader photos={measurements} onChange={changeMeasurements} onOpen={openLightbox} />
       </div>
 
       <h2>Packaging photos</h2>
       <div className="fset">
         <p className="muted" style={{ margin: '0 0 0.25rem', fontSize: '0.85rem' }}>Photos of packing, cartons, polybags, labels etc.</p>
-        <PhotoUploader photos={packaging} onChange={changePackaging} onOpen={setLightbox} />
+        <PhotoUploader photos={packaging} onChange={changePackaging} onOpen={openLightbox} />
       </div>
 
       <h2>Result</h2>
@@ -372,7 +373,7 @@ export default function InspectionForm() {
         <button className="btn cta" onClick={save} disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
       </div>
 
-      <Lightbox photo={lightbox} onClose={() => setLightbox(null)} />
+      <Lightbox photo={lightbox && lightbox.photo} photos={lightbox && lightbox.photos} onClose={() => setLightbox(null)} />
     </div>
   );
 }

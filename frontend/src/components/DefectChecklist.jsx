@@ -7,7 +7,7 @@ import PhotoUploader from './PhotoUploader';
 //   onToggle(defect), onChangePcs(defectId, val), onPhotos(defectId, photos)
 //   customs: [{ key, custom_description, pcs_found, photos: [] }]
 //   onAddCustom(), onChangeCustom(key, patch), onRemoveCustom(key)
-//   onOpenPhoto(photo)
+//   onOpenPhoto(photo, photos)
 export default function DefectChecklist({
   defects, selected, onToggle, onChangePcs, onPhotos,
   customs, onAddCustom, onChangeCustom, onRemoveCustom, onOpenPhoto,

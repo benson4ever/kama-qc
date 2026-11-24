@@ -30,7 +30,7 @@ export default function PhotoUploader({ photos = [], onChange, onOpen }) {
       {photos.map((p, i) => (
         <div className="photo-item" key={p.key || p.id}>
           <button type="button" className="rm" onClick={() => remove(i)}>×</button>
-          <Thumb photo={p} onClick={() => onOpen && onOpen(p)} />
+          <Thumb photo={p} onClick={() => onOpen && onOpen(p, photos)} />
           <input className="cap" placeholder="Caption" value={p.caption || ''} onChange={(e) => update(i, { caption: e.target.value })} />
         </div>
       ))}

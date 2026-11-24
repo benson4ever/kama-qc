@@ -20,7 +20,7 @@ export default function PhotoGallery({ photos }) {
       <div className="photo-grid">
         {photos.map((p) => <Thumb key={p.id} photo={p} onClick={() => setOpen(p)} />)}
       </div>
-      <Lightbox photo={open} onClose={() => setOpen(null)} />
+      <Lightbox photo={open} photos={photos} onClose={() => setOpen(null)} />
     </>
   );
 }

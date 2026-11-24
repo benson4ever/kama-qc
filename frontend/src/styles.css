@@ -304,6 +304,11 @@ table.data tr.clickable:hover { background: var(--surface-hover); }
 .lightbox .lb-btn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-width: 44px; padding: 0; border-radius: 50%; background: rgba(26, 25, 23, 0.6); border: 1px solid var(--muted); color: var(--paper); cursor: pointer; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 .lightbox .lb-btn:active { background: var(--muted); }
 .lightbox .lb-btn svg { width: 22px; height: 22px; display: block; }
+.lightbox .lb-count { margin-right: auto; align-self: center; color: var(--paper); font-size: 14px; font-variant-numeric: tabular-nums; padding-left: 4px; }
+.lightbox .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; }
+.lightbox .lb-nav.prev { left: calc(env(safe-area-inset-left, 0px) + 12px); }
+.lightbox .lb-nav.next { right: calc(env(safe-area-inset-right, 0px) + 12px); }
+@media (hover: none) { .lightbox .lb-nav { display: none; } } /* touch: swipe instead */
 
 /* ---------- stats ---------- */
 .summary-strip {
